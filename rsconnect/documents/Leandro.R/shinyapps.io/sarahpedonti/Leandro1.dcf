@@ -1,0 +1,14 @@
+name: Leandro1
+title: Leandro1
+username:
+account: sarahpedonti
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4492738
+bundleId: 4923560
+url: https://sarahpedonti.shinyapps.io/Leandro1/
+when: 1628961667.24486
+lastSyncTime: 1628961667.24487
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: color_palette.R

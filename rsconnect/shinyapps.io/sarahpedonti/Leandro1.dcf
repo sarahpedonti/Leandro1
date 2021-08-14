@@ -1,0 +1,14 @@
+name: Leandro1
+title: Leandro1
+username:
+account: sarahpedonti
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4492738
+bundleId: 4923589
+url: https://sarahpedonti.shinyapps.io/Leandro1/
+when: 1628962766.76894
+lastSyncTime: 1628962766.769
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: color_palette.R|schools.csv|ShinyApp/ui.R/server.R/www/ECNClogo.png
