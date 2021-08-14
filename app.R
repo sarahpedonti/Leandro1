@@ -39,7 +39,7 @@ library(rgdal)
 
 
 #basic architecture for shiny app (with chloropeth mapping; change this to PPE?)
-
+# add a comment
 ui <- fluidPage(#theme="bootstrap.css",
   tags$head(
     tags$style(HTML(" @import url('http://fonts.cdnfonts.com/css/itc-avant-garde-gothic-std-book');
@@ -122,8 +122,8 @@ shinyApp(ui, server)
                           #token='0C7EF3A322A741CDDD35E5366C22897F',
                           #secret='JrUrKknfyeFCs0br4ytrYGg9T6HAikB1nBlo+f1o')
 #to deploy
-library(rsconnect)
-rsconnect::deployApp('~/Leandro1/app.R')
+#library(rsconnect)
+#rsconnect::deployApp('app.R')
 
 
 
