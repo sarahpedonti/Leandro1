@@ -15,6 +15,13 @@ library(dplyr)
 #reading in merged shape file that was written from above
 mergedshapeL <- read_sf("output.shp")
 
+
+#making labels for map below
+labels <- sprintf(
+  mergedshapeL$LEA
+) %>% 
+  lapply(htmltools::HTML)
+
 #get rid of commas so that R can read as.numeric
 library(eeptools)
 mergedshapeL$Total <- decomma(mergedshapeL$Total)
@@ -74,44 +81,66 @@ ui <- fluidPage(#theme="bootstrap.css",
     tag.map.title, HTML("To see allocations broken down, click your district")
   ),
   titlePanel(title="Leandro Budget Tool"),
-  sidebarLayout(
+
+  
+sidebarLayout(
     sidebarPanel(
-      helpText("View your districts anticipated funding
-               by current or projected ('27-28) year"),
+        helpText("View your district's anticipated funding
+               by current ('21-22) or projected ('27-28) year"),
       
       selectInput("var", 
                   label = "Choose a year to display",
-                  choices = list("Current", 
-                                 "Current with Leandro",
+                  choices = list("2021-2022 Projected", 
+                                 "2021-2022 with Leandro",
                                  "2027-2028 Projected", 
                                  "2027-2028 with Leandro"),
-                  selected = "Current")),
-                mainPanel(leaflet(mergedshapeL) %>%
+                  selected = "2021-2022 Projected")),
+                mainPanel(mergedshapeL %>%
+                            sf::st_transform(4326) %>% 
+                            leaflet() %>%
                             addProviderTiles("MapBox", options = providerTileOptions(
                               id = "mapbox.light",
-                              accessToken = Sys.getenv('MAPBOX_ACCESS_TOKEN'))) %>%
+                              accessToken = 'pk.eyJ1Ijoic2ZmODA5IiwiYSI6ImNrc2ZocmQwZTFhZ2kyb255eTdqZnhraDQifQ.R6fe2zZx8SVrWtYSZjfGrg
+')) %>%
                             addPolygons(fillColor = ~pal(Total),
                                         weight = .5,
                                         opacity = 1,
                                         color = "black",
                                         fillOpacity = 0.7,
-                                        popup = paste(mergedshapeL$NAME, "<br>",
+                                        popup = paste(
                                                       "Textbooks", mergedshapeL$Textbks, "<br>",
                                                       "At-risk", mergedshapeL$At_Risk, "<br>",
                                                       "Classroom Supply/Mat.", mergedshapeL$C_S___M, "<br>",
                                                       "LEP", mergedshapeL$Lmt_E_P, "<br>",
-                                                      "Chi. w/ Dis.", mergedshapeL$Chld__D))
-                                        %>%
-                                          addLegend(pal = pal, values = ~Total, opacity = 0.7, title = 'Total 21-22 Funding',
-                                                    position = "bottomright") %>%
-                            addTiles() %>%
-                            addControl(title, position = "topleft", className="map-title"),
+                                                      "Chi. w/ Dis.", mergedshapeL$Chld__D), 
+                                        highlight = highlightOptions(weight = 5,
+                                                                     color = "#666",
+                                                                     dashArray = NULL,
+                                                                     fillOpacity = 0.7,
+                                                                     bringToFront = TRUE), 
+                                        label = labels,
+                                        labelOptions = labelOptions(style = list("font-weight" = "normal", 
+                                                                                 padding = "3px 8px"),
+                                                                    textsize = "15px",
+                                                                    direction = "auto")) %>%
+        addLegend("bottomright",
+                  pal = pal,
+                  values = mergedshapeL$Total,
+                  title = "Total Funding",
+                  opacity = 1) %>%
                          
+        addTiles() %>%
+        addControl(title, position = "topleft", className="map-title")
                           
                           
-                          ),))
+                          )),)
 
-server <-function(input, output){}
+server <-function(input, output){output$plot1 <- renderPlot({
+  x <- rnorm(input$n)  
+  bw <- diff(range(x))/50
+  ggplot(mergedshapeL(x=LEA), aes(Total)) +
+    geom_histogram(color = "blue", fill = "white", binwidth = bw) + 
+    labs(x="LEA", y="Counts")})}
 
 shinyApp(ui, server)
 

@@ -5,10 +5,9 @@ account: sarahpedonti
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 4492738
-bundleId: 4923731
+bundleId: 4936508
 url: https://sarahpedonti.shinyapps.io/Leandro1/
-when: 1628968170.07987
-lastSyncTime: 1628968170.07988
+when: 1629289829.71795
+lastSyncTime: 1629289829.71797
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: schools.csv|ShinyApp/ui.R/server.R/www/ECNClogo.png
