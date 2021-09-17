@@ -222,7 +222,7 @@ server <- function(input, output, session) {
       output$AllotPlot <- renderPlot({
         
         word(data1()$LEA, 1)
-        ggplot(data1(), aes((fill=`LEA`), x= `LEA`, y= input$var)) +
+        ggplot(data1(), aes((fill=`LEA`), x= `LEA`, y= data1()[[input$var]])) +
           geom_bar(position="dodge", stat = "identity")+
           scale_fill_brewer(palette = "Spectral")+
           scale_x_discrete(label = function(x) stringr::str_trunc(x, 12)) +
