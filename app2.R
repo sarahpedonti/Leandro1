@@ -222,12 +222,15 @@ server <- function(input, output, session) {
       output$AllotPlot <- renderPlot({
         
         word(data1()$LEA, 1)
-        ggplot(data1(), aes((fill=`LEA`), x= `LEA`, y= data1()[[input$var]])) +
-          geom_bar(position="dodge", stat = "identity")+
-          scale_fill_brewer(palette = "Spectral")+
-          scale_x_discrete(label = function(x) stringr::str_trunc(x, 12)) +
+        p <- ggplot(data=data1()) + geom_col(aes(x = `LEA`, y= data1()[[input$var]], fill = data1()[[input$var]], stat = 'identity'))+
+        scale_x_discrete(label = function(x) stringr::str_trunc(x, 12)) +
           labs(title=input$LEA, y ="Allotment")+ 
           theme(legend.position="none", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+        p+ scale_fill_gradientn(colours = terrain.colors(120))
+          print(p)
+
+  
+      
         })
     }
 
