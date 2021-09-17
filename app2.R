@@ -3,6 +3,7 @@ library(tidyverse)
 library(shiny)
 library(leaflet)
 library(eeptools)
+library(ggplot2)
 library(shiny)
 library(shinydashboard)
 library(leaflet)
@@ -12,6 +13,7 @@ library(htmltools)
 library(colorspace)
 library(rgdal)
 library(RColorBrewer)
+library(Polychrome)
 
 # read in datasets
 `2021-2022 Projected` <- read_csv("2021Leandrocostestimateswv_wGEOID.csv")
@@ -71,7 +73,7 @@ or select an allocation category from the box below to see a graph of categories
                         selected = "2021-2022 Projected"),
             
             selectInput("var", 
-                        label = "Choose a an allottment category",
+                        label = "Choose a an allotment category",
                         choices = c("Textbooks" = "Textbooks",
                                     "At Risk" = "At-Risk",
                                     "Classroom Supplies"= "Classroom Supplies & Materials",
@@ -103,7 +105,8 @@ or select an allocation category from the box below to see a graph of categories
         
         mainPanel(
             leafletOutput("map", width = "100%", height = 400),
-            
+            br(),
+            br(),  
             # Output: Histogram ----
             plotOutput(outputId = "AllotPlot")
         )
@@ -214,13 +217,14 @@ server <- function(input, output, session) {
                   opacity = 1)
       })
     
+
       output$AllotPlot <- renderPlot({
-
-        bins <- seq(min(var(), na.rm = TRUE), max(var(), na.rm = TRUE), length.out = 5)
-
-        hist(var(), breaks = bins, col = "#75AADB", border = "white",
-             xlab = "Comparisons of allottments (in dollars)",
-             main = "Histogram of allotments")
+        
+       
+        ggplot(data1(), aes((fill=LEA), x= LEA, y= input$var)) +
+          geom_bar(position="dodge", stat = "identity")+
+          scale_fill_brewer(palette = "Spectral")+
+          theme(legend.position="none", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
         })
     }
 
