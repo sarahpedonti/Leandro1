@@ -14,6 +14,7 @@ library(colorspace)
 library(rgdal)
 library(RColorBrewer)
 library(Polychrome)
+library(stringr)
 
 # read in datasets
 `2021-2022 Projected` <- read_csv("2021Leandrocostestimateswv_wGEOID.csv")
@@ -74,7 +75,7 @@ or select an allocation category from the box below to see a graph of categories
             
             selectInput("var", 
                         label = "Choose a an allotment category",
-                        choices = c("Textbooks" = "Textbooks",
+                        choices = c( "Textbooks" = "Textbooks",
                                     "At Risk" = "At-Risk",
                                     "Classroom Supplies"= "Classroom Supplies & Materials",
                                     "LEP" = "Limited English Proficiency", 
@@ -141,8 +142,8 @@ server <- function(input, output, session) {
       
       # uncomment the lines below for non-web testing
       # remember to comment them out again before running the app!!!
-      #county_info <- `2021-2022 Projected`
-      #allotment <- "At-Risk"
+      # county_info <- `2021-2022 Projected`
+      # allotment <- "At-Risk"
       
       # merge shapefile with dataset
       county_info$GEOID <- as.character(county_info$GEOID)
@@ -220,10 +221,12 @@ server <- function(input, output, session) {
 
       output$AllotPlot <- renderPlot({
         
-       
-        ggplot(data1(), aes((fill=LEA), x= LEA, y= input$var)) +
+        word(data1()$LEA, 1)
+        ggplot(data1(), aes((fill=`LEA`), x= `LEA`, y= input$var)) +
           geom_bar(position="dodge", stat = "identity")+
           scale_fill_brewer(palette = "Spectral")+
+          scale_x_discrete(label = function(x) stringr::str_trunc(x, 12)) +
+          labs(title=input$LEA, y ="Allotment")+ 
           theme(legend.position="none", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
         })
     }
