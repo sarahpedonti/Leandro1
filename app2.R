@@ -17,7 +17,7 @@ library(Polychrome)
 library(stringr)
 library(scales)
 
-# read in datasets
+ # read in datasets
 `2021-2022 Projected` <- read_csv("2021Leandrocostestimateswv_wGEOID.csv")
 `2021-2022 with Leandro` <- read_csv("2021Leandrocostestimatesfullfund_wGEOID.csv")
 `2027-2028 with Leandro` <- read_csv("2027Leandrocostestimateswfullfunding_wGEOID.csv")
@@ -59,23 +59,37 @@ ui <- fluidPage(
     ),
     
     titlePanel(title="Leandro Budget Tool"),
+# Adding 4 dashes to the end of this comment allows you to collapse the sidebarLayout section! ----
     
     sidebarLayout(
         sidebarPanel(
-            helpText("North Carolina school districts/LEAs are displayed according to geographical location.
-Each LEA contains pop up boxes with budget categories calculated for either the 21-22 or 27-28 school yearc
-The dropdown box below will allow you to select the year.First, choose your year.Then,click your district of interest to view breakdown of allocations,
-or select an allocation category from the box below to see a graph of categories"),
+            helpText("North Carolina districts/LEAs are displayed according to geographic location.", 
+                     br(),
+                     "To use this tool:",
+                     br(),
+                     br(),
+"1) Click on the map then move your cursor to find your LEA.", 
+                    br(),
+                    br(),
+"2) Once located, click it and scroll to see budget break-downs for the selected year.", 
+                    br(),
+                    br(),
+"3) To change between years, use the first drop down box below.", 
+                    br(),
+                    br(),
+"4) Then, select a budget category to see how funding for your district changes.", 
+                    br(),
+                    br(),
+"Selections you make will be reflected in map hue and bar chart at bottom"),
             
             selectInput("dataset", 
                         label = "Choose a year to display",
                         choices = c("2021-2022 Projected" = "2021-2022 Projected", 
-                                    "2021-2022 with Leandro" = "2021-2022 with Leandro",
                                     "2027-2028 with Leandro"= "2027-2028 with Leandro"),
                         selected = "2021-2022 Projected"),
             
             selectInput("var", 
-                        label = "Choose a an allotment category",
+                        label = "Choose an allotment category",
                         choices = c( "Textbooks" = "Textbooks",
                                     "At Risk" = "At-Risk",
                                     "Classroom Supplies"= "Classroom Supplies & Materials",
@@ -105,12 +119,17 @@ or select an allocation category from the box below to see a graph of categories
                         selected = "NC Virtual")
         ),
         
+        
         mainPanel(
             leafletOutput("map", width = "100%", height = 400),
             br(),
             br(),  
             # Output: Histogram ----
-            plotOutput(outputId = "AllotPlot")
+            plotOutput(outputId = "AllotPlot"), 
+            helpText("Dictionary of Budget Definition Terms", 
+                     br(), 
+                     "Add content here addressing any need for more detailed explanation."
+            ),
         )
     )
     
@@ -166,6 +185,8 @@ server <- function(input, output, session) {
         palette = "Blues",
         domain = allotment
         )
+      palWithoutNA <- colorNumeric("Blues", allotment, na.color=rgb(0,0,0,0))
+      
       
       # generate leaflet map
       leaflet() %>%
@@ -187,35 +208,41 @@ server <- function(input, output, session) {
                                                  dashArray = NULL,
                                                  fillOpacity = 0.7,
                                                  bringToFront = TRUE),
-                    popup = paste(
-                      "Textbooks:", mergedshapeL2$Textbooks, "<br>",
-                      "At-risk:", mergedshapeL2$`At-Risk`, "<br>",
-                      "Classroom Supply/Mat.:", mergedshapeL2$`Classroom Supplies & Materials`, "<br>",
-                      "LEP:", mergedshapeL2$`Limited English Proficiency`, "<br>",
-                      "Chi. w/ Dis.:", mergedshapeL2$`Children with Disabilities`, "<br>", 
-                      "Low Wealth:", mergedshapeL2$`Low Wealth`, "<br>",
-                      "Teacher Assist.:", mergedshapeL2$`Teacher Assistants`, "<br>",
-                      "Supp. Funding:", mergedshapeL2$`Disadvantaged Student Supplemental Funding`, "<br", 
-                      "Instructional Support:", mergedshapeL2$`Instructional Support (Dollars)`, "<br>", 
-                      "Assistant Principal:", mergedshapeL2$`Assistant Principals (Dollars)`, "<br>", 
-                      "Non-Inst. Support:", mergedshapeL2$`Non-Instructional Support`, "<br>", 
-                      "Central Office:", mergedshapeL2$`Central Office`, "<br>",
-                      "NC Virtual:", mergedshapeL2$`NC Virtual Public School`, "<br>",
-                      "Classroom Teachers:", mergedshapeL2$`Classroom Teachers \n(Dollar)`, "<br>",
-                      "Principals:", mergedshapeL2$`Principals \n(Dollar)`, "<br>", 
-                      "Transportation:", mergedshapeL2$`Transportation`, "<br>",
-                      "Small County:", mergedshapeL2$`Small County`, "<br>", 
-                      "CTE Teachers:", mergedshapeL2$`CTE Teachers (Dollar)`, "<br>",
-                      "CTE Prog. Supp.:", mergedshapeL2$`CTE Program Support`, "<br>", 
-                      "Driver Training:", mergedshapeL2$`Driver Training`, "<br>"
-                      )
+                    popup = paste("<div class='leaflet-popup-scrolled' style='max-width:600px;max-height:100px'><b><h3>",
+                                  mergedshapeL2$LEA, "</h3></b>", 
+                                   "Textbooks:", mergedshapeL2$Textbooks, "<br>",
+                                   "At-risk:", mergedshapeL2$`At-Risk`, "<br>",
+                                   "Classroom Supply/Mat.:", mergedshapeL2$`Classroom Supplies & Materials`, "<br>",
+                                   "LEP:", mergedshapeL2$`Limited English Proficiency`, "<br>",
+                                   "Chi. w/ Dis.:", mergedshapeL2$`Children with Disabilities`, "<br>", 
+                                   "Low Wealth:", mergedshapeL2$`Low Wealth`, "<br>",
+                                   "Teacher Assist.:", mergedshapeL2$`Teacher Assistants`, "<br>",
+                                   "Supp. Funding:", mergedshapeL2$`Disadvantaged Student Supplemental Funding`, "<br", 
+                                   "Instructional Support:", mergedshapeL2$`Instructional Support (Dollars)`, "<br>", 
+                                   "Assistant Principal:", mergedshapeL2$`Assistant Principals (Dollars)`, "<br>", 
+                                   "Non-Inst. Support:", mergedshapeL2$`Non-Instructional Support`, "<br>", 
+                                   "Central Office:", mergedshapeL2$`Central Office`, "<br>",
+                                   "NC Virtual:", mergedshapeL2$`NC Virtual Public School`, "<br>",
+                                   "Classroom Teachers:", mergedshapeL2$`Classroom Teachers \n(Dollar)`, "<br>",
+                                   "Principals:", mergedshapeL2$`Principals \n(Dollar)`, "<br>", 
+                                   "Transportation:", mergedshapeL2$`Transportation`, "<br>",
+                                   "Small County:", mergedshapeL2$`Small County`, "<br>", 
+                                   "CTE Teachers:", mergedshapeL2$`CTE Teachers (Dollar)`, "<br>",
+                                   "CTE Prog. Supp.:", mergedshapeL2$`CTE Program Support`, "<br>", 
+                                   "Driver Training:", mergedshapeL2$`Driver Training`, "<br>",
+                                  "</div>")
+                                  
+                       , 
+                     
 
         ) %>%
         
-        addLegend(pal = pal, 
+        addLegend(pal = palWithoutNA, 
                   values = allotment,
                   position = "bottomright",
-                  title = "Total Funding",
+                  title = "Total Funding <br> (gradations reflect <br> total $)",
+                  na.label="",
+                  labFormat = labelFormat(prefix = "$"),
                   opacity = 1)
       })
     
