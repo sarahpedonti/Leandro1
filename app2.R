@@ -15,6 +15,7 @@ library(rgdal)
 library(RColorBrewer)
 library(Polychrome)
 library(stringr)
+library(scales)
 
 # read in datasets
 `2021-2022 Projected` <- read_csv("2021Leandrocostestimateswv_wGEOID.csv")
@@ -225,8 +226,8 @@ server <- function(input, output, session) {
         p <- ggplot(data=data1()) + geom_col(aes(x = `LEA`, y= data1()[[input$var]], fill = data1()[[input$var]], stat = 'identity'))+
         scale_x_discrete(label = function(x) stringr::str_trunc(x, 12)) +
           labs(title=input$LEA, y ="Allotment")+ 
-          theme(legend.position="none", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-        p+ scale_fill_gradientn(colours = terrain.colors(120))
+          theme(legend.position="none", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+        scale_y_continuous(labels = dollar)
           print(p)
 
   

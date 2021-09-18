@@ -1,13 +1,13 @@
 name: Leandro2
-title: Leandro2
+title:
 username:
 account: sarahpedonti
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 4617672
-bundleId: 5045475
+bundleId: 5044949
 url: https://sarahpedonti.shinyapps.io/Leandro2/
-when: 1631933342.76883
-lastSyncTime: 1631933342.76884
+when: 1631916740.66842
+lastSyncTime: 1631916740.66844
 asMultiple: FALSE
 asStatic: FALSE
