@@ -19,7 +19,6 @@ library(scales)
 
  # read in datasets
 `2021-2022 Projected` <- read_csv("2021Leandrocostestimateswv_wGEOID.csv")
-`2021-2022 with Leandro` <- read_csv("2021Leandrocostestimatesfullfund_wGEOID.csv")
 `2027-2028 with Leandro` <- read_csv("2027Leandrocostestimateswfullfunding_wGEOID.csv")
 
 # Adding 4 dashes to the end of this comment allows you to collapse the UI section! ----
@@ -142,8 +141,6 @@ server <- function(input, output, session) {
     data1 <- reactive({
         if(input$dataset == "2021-2022 Projected") {
             return(`2021-2022 Projected`)
-        }else if(input$dataset == "2021-2022 with Leandro") {
-            return(`2021-2022 with Leandro`)
         }else{input$dataset == "2027-2028 with Leandro"
             return(`2027-2028 with Leandro`)
         }
@@ -209,7 +206,7 @@ server <- function(input, output, session) {
                                                  fillOpacity = 0.7,
                                                  bringToFront = TRUE),
                     popup = paste("<div class='leaflet-popup-scrolled' style='max-width:600px;max-height:100px'><b><h3>",
-                                  mergedshapeL2$LEA, "</h3></b>", 
+                                  mergedshapeL2$NAME, "</h3></b>", 
                                    "Textbooks:", mergedshapeL2$Textbooks, "<br>",
                                    "At-risk:", mergedshapeL2$`At-Risk`, "<br>",
                                    "Classroom Supply/Mat.:", mergedshapeL2$`Classroom Supplies & Materials`, "<br>",
@@ -231,11 +228,7 @@ server <- function(input, output, session) {
                                    "CTE Prog. Supp.:", mergedshapeL2$`CTE Program Support`, "<br>", 
                                    "Driver Training:", mergedshapeL2$`Driver Training`, "<br>",
                                   "</div>")
-                                  
-                       , 
-                     
-
-        ) %>%
+                    ) %>%
         
         addLegend(pal = palWithoutNA, 
                   values = allotment,
